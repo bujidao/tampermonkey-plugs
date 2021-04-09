@@ -1,0 +1,69 @@
+// ==UserScript==
+// @name         ToggleGithubVscodeStyle
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  try to take over the world!
+// @author       You
+// @match        https://github.com/*
+// @match        https://github1s.com/*
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+    var config = {
+        original: 'github.com',
+        targetUrl: 'github1s.com'
+    }
+    var isInOriginModel = true
+    // 创建按钮
+    var createBtn = function() {
+        var wrapper = document.createElement('div')
+        wrapper.innerHTML = '切<br>换<br>编<br>辑<br>模<br>式'
+        wrapper.style.display = 'inline-block'
+        wrapper.style.position = 'fixed'
+        wrapper.style.right = '0'
+        wrapper.style.top = '50%'
+        wrapper.style.marginTop = '-70px'
+        wrapper.style.width = '40px'
+        wrapper.style.height = '140px'
+        wrapper.style.textAlign = 'center'
+        wrapper.style.lineHeight = '23px'
+        wrapper.style.fontSize = '12px'
+        wrapper.style.borderRadius = '6px 0 0 6px'
+        wrapper.style.cursor = 'pointer'
+        wrapper.style.userSelect = 'none'
+        wrapper.style.boxShadow = '0px 0px 10px #aaa'
+        wrapper.style.overflow = 'hidden'
+        wrapper.style.zIndex = '1001'
+        wrapper.addEventListener('click', function(e){
+            e.preventDefault()
+            handleToggleVscodeEditStyle()
+        }, true)
+        document.body.appendChild(wrapper)
+    }
+    // 按钮点击
+    var handleToggleVscodeEditStyle = function() {
+        var url = window.location.href
+        if (isInOriginModel) {
+            url = url.replace(config.original, config.targetUrl)
+        } else {
+            url = url.replace(config.targetUrl, config.original)
+        }
+        window.location.href = url
+    }
+
+    // 监听url变化
+    var init = function() {
+        var host = window.location.host
+        if (host.indexOf(config.original) != -1) {
+            isInOriginModel = true
+            createBtn()
+        }
+        if (host.indexOf(config.targetUrl) != -1) {
+            isInOriginModel = false
+            createBtn()
+        }
+    }
+    init()
+})();
