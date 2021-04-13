@@ -26,6 +26,8 @@
       setTimeout(function () {
         doBaiduRules()
       }, 0)
+    } else {
+      doBingRules()
     }
   }
 
@@ -38,13 +40,14 @@
   function doBingRules() {
     var engineList = [
       {
-        cn: '百度',
+        cn: '百度一下',
         en: 'baidu',
         url: 'https://www.baidu.com/s?wd='
       }
     ]
 
     var searchBtnWrapper = document.getElementById('est_switch')
+    searchBtnWrapper.style.width = 'auto'
     if (!searchBtnWrapper && searchBtnWrapper.childElementCount === 2) {
       return
     }
@@ -57,15 +60,42 @@
       engineItemDom.innerHTML = engine.cn
       engineItemDom.tabindex = tabIndex
       engineItemDom.ariaLabel = engine.cn
+      engineItemDom.className = 'est_unselected_after'
       // style
+      var aEstUnselectedDom = document.querySelector('#est_en')
+      var aEstUnselectedDomStyleList = getComputedStyle(aEstUnselectedDom)
+      for(var i = 0; i < aEstUnselectedDomStyleList.length; i++) {
+        var key = aEstUnselectedDomStyleList[i]
+        var value = aEstUnselectedDomStyleList.getPropertyValue(key)
+        if (value) {
+          engineItemDom.style[key] = value
+        }
+      }
+      engineItemDom.style.width = 'auto'
+      engineItemDom.style.color = '#fff'
+      engineItemDom.style['-webkit-text-fill-color'] = ''
+      engineItemDom.style['text-shadow'] = 'none'
+      engineItemDom.style['z-index'] = '-2 !important'
+      engineItemDom.style.zIndex = '-2 !important'
+      engineItemDom.style['margin-left'] = '2px'
+      // style after
+      var aEstUnselectedDomAfterStyleStrint = '.est_unselected_after::after{'
+      var aEstUnselectedDomAfterStyleList = getComputedStyle(aEstUnselectedDom, '::after')
+      for(var j = 0; j < aEstUnselectedDomAfterStyleList.length; j++) {
+        var key2 = aEstUnselectedDomAfterStyleList[j]
+        var value2 = aEstUnselectedDomAfterStyleList.getPropertyValue(key2)
+        if (value2) {
+          aEstUnselectedDomAfterStyleStrint += key2 + ':' + value2 + ';'
+        }
+      }
+      aEstUnselectedDomAfterStyleStrint += 'width: auto;color: #fff;z-index: -2 !important;background-image:linear-gradient(to right,rgb(39,92, 230), rgb(59,184,244));}'
       var styleDom = document.createElement('style')
-      var styleValue = "#est_baidu{position:relative;cursor: pointer;margin-left: 4px;display:inline-block;height:24px;line-height:25px;font-size:14px;text-align:center;padding:0 11px 0 12px;color:#fff;font-family:'Microsoft YaHei',Arial,Helvetica,sans-serif}#est_baidu::after{content:'';position:absolute;top:4px;right:0;bottom:0;left:0;z-index:-1;-webkit-transform:scale(1.1,1.3)perspective(.5em)rotateX(1.9deg);transform:scale(1.1,1.3)perspective(.5em)rotateX(1.9deg);-webkit-transform-origin:bottom left;transform-origin:bottom left;border-radius:2px 2px 0 0;background-image:linear-gradient(to right,rgb(39,92, 230), rgb(59,184,244));};"
-      styleDom.innerHTML = styleValue
-      tabIndex++
+      styleDom.innerHTML = aEstUnselectedDomAfterStyleStrint
       // event
       engineItemDom.addEventListener('click', function () {
         window.location.href = engine.url + keyWords
       }, true)
+      // append
       searchBtnWrapper.appendChild(engineItemDom)
       searchBtnWrapper.appendChild(styleDom)
     }
